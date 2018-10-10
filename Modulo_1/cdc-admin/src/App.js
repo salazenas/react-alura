@@ -1,32 +1,53 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './css/pure-min.css'
-import './css/side-menu.css'
-import $ from 'jquery'
+import './css/pure-min.css';
+import './css/side-menu.css';
+import $ from 'jquery';
 
 class App extends Component {
 
   constructor() {
-    super()
-    this.state = {
-      lista: []
-    }
+    super();
+    this.state = { 
+      lista: [] 
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     $.ajax({
       url: "http://cdc-react.herokuapp.com/api/autores",
       dataType: 'json',
       success: function (resposta) {
-        this.setState({ lista: resposta })
+        this.setState({ lista: resposta });
       }.bind(this)
+    }
+    );
+  }
+
+  enviaForm(evento) {
+    evento.preventDefault()
+    
+    $.ajax({
+      url: "http://cdc-react.herokuapp.com/api/autores",
+      contentType:'application/json',
+      dataType:'json',
+      type:'post',
+      data: JSON.stringify({}),
+      success: (response) => {
+        console.log('sucesso')
+      },
+      error: (response) => {
+        console.log('erro')
+      }
     })
+
   }
 
   render() {
     return (
       <div id="layout">
+
         <a href="#menu" id="menuLink" className="menu-link">
+
           <span></span>
         </a>
 
@@ -37,7 +58,7 @@ class App extends Component {
             <ul className="pure-menu-list">
               <li className="pure-menu-item"><a href="#" className="pure-menu-link">Home</a></li>
               <li className="pure-menu-item"><a href="#" className="pure-menu-link">Autor</a></li>
-              <li className="pure-menu-item"><a href="#" className="pure-menu-link">Livros</a></li>
+              <li className="pure-menu-item"><a href="#" className="pure-menu-link">Livro</a></li>
             </ul>
           </div>
         </div>
@@ -48,7 +69,7 @@ class App extends Component {
           </div>
           <div className="content" id="content">
             <div className="pure-form pure-form-aligned">
-              <form className="pure-form pure-form-aligned">
+              <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
                 <div className="pure-control-group">
                   <label htmlFor="nome">Nome</label>
                   <input id="nome" type="text" name="nome" value="" />
@@ -78,13 +99,13 @@ class App extends Component {
                 </thead>
                 <tbody>
                   {
-                    this.state.lista.map((autor) => {
+                    this.state.lista.map(function (autor) {
                       return (
                         <tr key={autor.id}>
                           <td>{autor.nome}</td>
                           <td>{autor.email}</td>
                         </tr>
-                      )
+                      );
                     })
                   }
                 </tbody>
@@ -92,8 +113,10 @@ class App extends Component {
             </div>
           </div>
         </div>
+
+
       </div>
-    )
+    );
   }
 }
 
